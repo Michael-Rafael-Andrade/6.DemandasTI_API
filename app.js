@@ -6,7 +6,6 @@ var logger = require('morgan');
 var rotasIndex = require('./routes/rotasIndex');
 var rotasDemandas = require('./routes/rotasDemandas');
 
-
 var app = express();
 
 app.use(logger('dev'));

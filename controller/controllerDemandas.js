@@ -41,12 +41,12 @@ exports.criar = async function ( req, res ){
         // status padrão 'pendente', definido no modelo
     };
 
-    const error = [];
+    const errors = [];
     if(!demanda_enviada.titulo || demanda_enviada.titulo.trim() === ''){
         errors.push({ msg: 'Título é obrigatório' });
     }
     if(!demanda_enviada.texto || demanda_enviada.texto.trim() === ''){
-        erros.push({ msg: 'Texto é obrigatório' });
+        errors.push({ msg: 'Texto é obrigatório' });
     }
     const urg = Number(demanda_enviada.urgencia);
     if(!demanda_enviada.urgencia || Number.isNaN(urg) || urg < 1 || urg > 5){
@@ -57,7 +57,7 @@ exports.criar = async function ( req, res ){
         return res.status(400).json({ errors });
     // Se passar de todas as validações vamos tentar salvar no banco de dados
     try{
-        const nova_demanda = await Demanda({ titulo: demanda_enviada.titulo, texto: demanda_enviada.texto, urgencia: urg });
+        const nova_demanda = await Demanda.create({ titulo: demanda_enviada.titulo, texto: demanda_enviada.texto, urgencia: urg });
         // código HTTP para criação de registro é 201 Created
         return res.status(201).json(nova_demanda);
     } catch(error){
@@ -105,7 +105,7 @@ exports.atualizar = async function ( req, res ){
     if (errors.length > 0) return res.status(400).json({ errors });
 
     try{
-        const demanda = await Demanda.findByPk(id);
+        const demanda = await Demanda.findByPk(id_demanda);
 
         if(!demanda)
             return res.status(404).json({ error: 'Demanda não encontrada' });
