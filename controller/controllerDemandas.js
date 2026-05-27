@@ -1,10 +1,24 @@
 const Demanda = require('../model/modelos.js');
 
-// Lista todas as demandas
+// Lista todas as demandas, suporta filtro por status via query string
 exports.listar = async function ( req, res ){
     try{
-        const demandas = await Demanda.findAll();
-       
+        // cria objeto para filtro, se houver status válido na query string
+        var where = {};
+        const status_permitidos = [
+            'pendente',
+            'em_andamento',
+            'concluido'
+        ];
+        if(req.query.status && status_permitidos.includes(req.query.status)){
+            where = {
+                status: req.query.status
+            }
+        }
+
+        const demandas = await Demanda.findAll({
+            where, order: [['criada_em', 'DESC']]
+        });       
         return res.json(demandas);
     } catch(error){
         console.error('Erro ao listar demandas: ', error);
